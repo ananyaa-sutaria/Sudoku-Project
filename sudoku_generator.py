@@ -45,8 +45,10 @@ class SudokuGenerator:
     def get_board(self):
 
         for i in range(self.row_length):
+            row = []
             for j in range (self.row_length):
-                self.board.append(0)
+                row.append(0)
+                self.board.append(row)
 
         return self.board
 
@@ -59,9 +61,11 @@ class SudokuGenerator:
     '''
     def print_board(self):
 
-        for i in range(self.row_length):
-            for j in range (self.row_length):
-                print(self.board[i][j], end=" ")
+        for row in range(self.row_length):
+            for col in range (len(self.row_length[row])):
+                print(self.board[row][col], end=" ")
+                if col < len(self.board[row]) -1:
+                    print(" ", end=" ")
             print()
 
     '''
