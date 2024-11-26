@@ -34,6 +34,7 @@ class SudokuGenerator:
         self.board = []
         self.box_length = math.pow(row_length, 1/2)
 
+
         return None
 
     '''
