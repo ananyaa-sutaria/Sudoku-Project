@@ -4,6 +4,7 @@ import pygame
 #ananyaa sutaria
 #crystal shao
 #kushi
+#esha gokulram
 
 """
 This was adapted from a GeeksforGeeks article "Program for Sudoku Generator" by Aarti_Rathi and Ankur Trisal
@@ -34,6 +35,7 @@ class SudokuGenerator:
         self.board = []
         self.box_length = math.pow(row_length, 1/2)
 
+
         return None
 
     '''
@@ -44,9 +46,11 @@ class SudokuGenerator:
     '''
     def get_board(self):
 
-        for i in range(self.row_length):
+        for i in range(1):
+            row = []
             for j in range (self.row_length):
-                self.board.append(0)
+                row.append(0)
+                self.board.append(row)
 
         return self.board
 
@@ -59,9 +63,11 @@ class SudokuGenerator:
     '''
     def print_board(self):
 
-        for i in range(self.row_length):
-            for j in range (self.row_length):
-                print(self.board[i][j], end=" ")
+        for row in range(len(self.row_length)):
+            for col in range (len(self.row_length[row])):
+                print(self.board[row][col], end=" ")
+                if col < len(self.board[row]) -1:
+                    print(" ", end=" ")
             print()
 
     '''
