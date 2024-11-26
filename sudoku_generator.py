@@ -43,7 +43,12 @@ class SudokuGenerator:
 	Return: list[list]
     '''
     def get_board(self):
-        pass
+
+        for i in range(self.row_length):
+            for j in range (self.row_length):
+                self.board.append(random.randint(0, 9))
+
+        return self.board
 
 
     '''
