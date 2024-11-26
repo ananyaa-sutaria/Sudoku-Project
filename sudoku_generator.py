@@ -302,3 +302,76 @@ class Cell:
             text_rect = text.get_rect(topleft=(x + 5, y + 5))
             self.screen.blit(text, text_rect)
 
+class Board:
+    def __init__(self, width, height, screen, difficulty):
+            self.width = width
+            self.height = height
+            self.screen = pygame.display.set_mode((576, 576))
+            self.difficulty = difficulty
+            self.gameState = [[0 for i in range(9)] for i in range(9)]
+            self.selected_cell = None
+
+    # Draws an outline of the Sudoku grid, with bold lines to delineate the 3x3 boxes
+    # Draws every cell on this board.
+    def draw(self):
+        for i in range(1, 10):  #draws 9 rows
+            pygame.draw.line(self.screen, (0, 0, 0), (0, i * 64), (576, i * 64))
+
+        for i in range(1, 10):  #draws 9 columns
+            pygame.draw.line(self.screen, (0, 0, 0), (i * 64, 0), (i * 64, 576))
+
+        #Draws bold lines every 3x3
+        for i in range(3, 9, 3):
+            pygame.draw.line(self.screen, (0, 0, 0), (i * 64, 0), (i * 64, 576), 5)
+            pygame.draw.line(self.screen, (0, 0, 0), (0, i * 64), (576, i * 64), 5)
+
+        #highlights red for cells clicked
+        if self.selected_cell:
+            row, col = self.selected_cell
+            pygame.draw.rect(self.screen, (255, 0, 0), (col * 64, row * 64, 64, 64), 5)
+
+        # Marks the cell at (row, col) in the board as the current selected cell.
+        #Once a cell has been selected, the user can edit its value or sketched value.
+    def select(self, row, col):
+        self.selected_cell = (row, col)
+
+
+'''
+
+
+
+def click(self, row, col)
+	If a tuple of (x,y) coordinates is within the displayed board,
+this function returns a tuple of the (row, col) of the cell which was clicked.
+Otherwise, this function returns None.
+
+def clear(self)
+	Clears the value cell.
+Note that the user can only remove the cell values and
+sketched values that are filled by themselves.
+
+def sketch(self, value)
+	Sets the sketched value of the current selected cell equal to the user entered value.
+	It will be displayed at the top left corner of the cell using the draw() function.
+
+def place_number(self, value)
+	Sets the value of the current selected cell equal to the user entered value.
+Called when the user presses the Enter key.
+
+def reset_to_original(self)
+	Resets all cells in the board to their original values
+(0 if cleared, otherwise the corresponding digit).
+
+
+def is_full(self)
+	Returns a Boolean value indicating whether the board is full or not.
+
+def update_board(self)
+	Updates the underlying 2D board with the values in all cells.
+
+def find_empty(self)
+	Finds an empty cell and returns its row and col as a tuple (x,y).
+
+def check_board(self)
+Check whether the Sudoku board is solved correctly.
+'''
