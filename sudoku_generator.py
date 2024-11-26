@@ -46,7 +46,7 @@ class SudokuGenerator:
     '''
     def get_board(self):
 
-        for i in range(self.row_length):
+        for i in range(1):
             row = []
             for j in range (self.row_length):
                 row.append(0)
@@ -63,7 +63,7 @@ class SudokuGenerator:
     '''
     def print_board(self):
 
-        for row in range(self.row_length):
+        for row in range(len(self.row_length)):
             for col in range (len(self.row_length[row])):
                 print(self.board[row][col], end=" ")
                 if col < len(self.board[row]) -1:
