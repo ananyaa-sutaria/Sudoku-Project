@@ -3,7 +3,7 @@ import pygame
 
 # ananyaa sutaria
 # crystal shao
-# kushi
+# kushagra katiyar
 # esha gokulram
 
 """
