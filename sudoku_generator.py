@@ -1,6 +1,6 @@
 import math,random
 #ananyaa sutaria
-#kusdhi
+#kushi
 
 """
 This was adapted from a GeeksforGeeks article "Program for Sudoku Generator" by Aarti_Rathi and Ankur Trisal
