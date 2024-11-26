@@ -1,4 +1,6 @@
 import math,random
+import pygame
+
 #ananyaa sutaria
 #crystal shao
 #kushi
@@ -26,7 +28,16 @@ class SudokuGenerator:
 	None
     '''
     def __init__(self, row_length, removed_cells):
-        pass
+        height = 9
+        width = 9
+        board = []
+
+        for i in range(height):
+            for j in range(width):
+                board.append(random.randint(0, 9))
+
+        print(board)
+
 
     '''
 	Returns a 2D python list of numbers which represents the board
@@ -212,3 +223,5 @@ def generate_sudoku(size, removed):
     sudoku.remove_cells()
     board = sudoku.get_board()
     return board
+
+
