@@ -27,13 +27,12 @@ class SudokuGenerator:
 	Return:
 	None
     '''
+
     def __init__(self, row_length, removed_cells):
         self.row_length = row_length
         self.board = []
 
-        for i in range(self.row_length):
-            for j in range(self.row_length):
-                self.board.append(random.randint(0, 9))
+        return None
 
     '''
 	Returns a 2D python list of numbers which represents the board
@@ -43,6 +42,7 @@ class SudokuGenerator:
     '''
     def get_board(self):
         pass
+
 
     '''
 	Displays the board to the console
