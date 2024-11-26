@@ -206,7 +206,13 @@ class SudokuGenerator:
 	Return: None
     '''
     def remove_cells(self):
-        pass
+        cells_removed = 0
+        while cells_removed < self.removed_cells:
+            row = random.randint(0, self.row_length - 1)
+            col = random.randint(0, self.row_length - 1)
+            if self.board[row][col] != 0:
+                self.board[row][col] = 0
+                cells_removed += 1
 
 '''
 DO NOT CHANGE
@@ -231,4 +237,35 @@ def generate_sudoku(size, removed):
     board = sudoku.get_board()
     return board
 
+class Cell:
+    def __init__(self, value, row, col, screen):
+        self.value = value
+        self.row = row
+        self. col = col
+        self.screen = screen
+        self.sketched_value = 0
+        self.selected = False
+    def set_cell_value(self, value):
+        self.value = value
+    def sketched_value(self, value):
+        self.sketched_value = value
+    def draw(self):
+        cell_size = 60
+        x = self.col * cell_size
+        y = self.row * cell_suze
+        pygame.draw.rect(self.screen, (255, 255, 255), (x, y, cell_size, cell_size))
+        if self.selected:
+            pygame.draw.rect(self.screen, (255, 0, 0), (x, y, cell_size, cell_size), 3)
+        else:
+            pygame.draw.rect(self.screen, (0, 0, 0), (x, y, cell_size, cell_size), 1)
+        if self.value != 0:
+            font = pygame.font.Font(None, cell_size//2)
+            text = font.render(str(self.value), True, (0, 0, 0))
+            text_rect = text.get_rect(center = (x + cell_size // 2, y + cell_size //2))
+            self.screen.blit(text, text_rect)
+        elif self.sketched_value != 0:
+            font = pygame.font.Fonr(None, cell_size // 3)
+            text = font.render(str(self.sketched_value), True, (128, 128, 128))
+            text_rect = text.get_rect(topleft = (x + 5, y + 5))
+            self.screen.blit(text, text_rect)
 
