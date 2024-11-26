@@ -46,7 +46,7 @@ class SudokuGenerator:
 
         for i in range(self.row_length):
             for j in range (self.row_length):
-                self.board.append(random.randint(0, 9))
+                self.board.append(0)
 
         return self.board
 
