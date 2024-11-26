@@ -50,7 +50,6 @@ class SudokuGenerator:
 
         return self.board
 
-
     '''
 	Displays the board to the console
     This is not strictly required, but it may be useful for debugging purposes
@@ -59,7 +58,11 @@ class SudokuGenerator:
 	Return: None
     '''
     def print_board(self):
-        pass
+
+        for i in range(self.row_length):
+            for j in range (self.row_length):
+                print(self.board[i][j], end=" ")
+            print()
 
     '''
 	Determines if num is contained in the specified row (horizontal) of the board
