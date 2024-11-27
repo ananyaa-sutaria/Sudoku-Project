@@ -141,11 +141,11 @@ class SudokuGenerator:
     '''
 
     def is_valid(self, row, col, num):
-        if num in board[row]:
+        if num in self.board[row]:
             return False
 
         for i in range(len(self.board)):
-            if board[i][col] == num:
+            if self.board[i][col] == num:
                 return False
 
         return True
@@ -170,7 +170,7 @@ class SudokuGenerator:
                 while True:
                     num = random.randint(1, 9)
                     if num not in used:
-                        board[i][j] = num
+                        self.board[i][j] = num
                         used.add(num)
                         break
 
