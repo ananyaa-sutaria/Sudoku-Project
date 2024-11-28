@@ -318,7 +318,7 @@ class Cell:
             text_rect = text.get_rect(center=(x + cell_size // 2, y + cell_size // 2))
             self.screen.blit(text, text_rect)
         elif self.sketched_value != 0:
-            font = pygame.font.Fonr(None, cell_size // 3)
+            font = pygame.font.Font(None, cell_size // 3)
             text = font.render(str(self.sketched_value), True, (128, 128, 128))
             text_rect = text.get_rect(topleft=(x + 5, y + 5))
             self.screen.blit(text, text_rect)
