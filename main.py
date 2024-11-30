@@ -81,7 +81,6 @@ def main():
 
         pygame.display.flip()
 
-    # Start the game with the selected difficulty
     board = Board(540, 600, screen, difficulty)
 
     # Main game loop
