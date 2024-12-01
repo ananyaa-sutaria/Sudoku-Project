@@ -68,6 +68,10 @@ class SudokuGenerator:
     def fill_box(self, row_start, col_start):
         num_set = []
 
+        if 8 - row_start < 3 or 8 - col_start < 3:
+            row_start = 5
+            col_start = 5
+
         for i in range(row_start, row_start + 3):
             for j in range(col_start, col_start + 3):
                 num = random.randint(1, 9)
