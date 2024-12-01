@@ -1,10 +1,9 @@
 import pygame
 import sys
 from sudoku_generator import Board
-from sudoku_generator import SudokuGenerator
 
 pygame.init()
-screen = pygame.display.set_mode((540, 600))
+screen = pygame.display.set_mode((576, 576))
 pygame.display.set_caption("Sudoku")
 
 #inital screen shown when user starts or resets game
@@ -82,6 +81,7 @@ def main():
 
         pygame.display.flip()
 
+    # Start the game with the selected difficulty
     board = Board(540, 600, screen, difficulty)
 
     # Main game loop

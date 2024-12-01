@@ -9,19 +9,31 @@ import pygame
 
 class SudokuGenerator:
 
-    def __init__(self, row_length=9, removed_cells=0):
+    def __init__(self, removed_cells, row_length=9):
         self.row_length = row_length
         self.removed_cells = removed_cells
-        self.board = [[0] * self.row_length for _ in range(self.row_length)]  # Initialize the board as a 9x9 grid
-        self.box_length = int(math.sqrt(self.row_length))  # Box length is sqrt of row_length (assumes 9x9 grid)
-        self.solution_board = [[0] * self.row_length for _ in range(self.row_length)]  # Store the solved board
+        self.board = []
+        self.box_length = math.pow(self.row_length, 1 / 2)
+
+        return None
 
     def get_board(self):
+        for row in range(self.row_length):
+            new_row = []
+            for col in range(self.row_length):
+                new_row.append(0)
+            self.board.append(new_row)
+
         return self.board
 
     def print_board(self):
-        for row in self.board:
-            print(" ".join(str(cell) for cell in row))
+        for row in range(len(self.board)):
+            for col in range(len(self.board[row])):
+                print(self.board[row][col], end=' ')
+            print()
+
+        return None
+
     def valid_in_row(self, row, num):
         if num in self.board[row]:
             return False
@@ -55,10 +67,6 @@ class SudokuGenerator:
 
     def fill_box(self, row_start, col_start):
         num_set = []
-
-        if 8 - row_start < 3 or 8 - col_start < 3:
-            row_start = 5
-            col_start = 5
 
         for i in range(row_start, row_start + 3):
             for j in range(col_start, col_start + 3):
@@ -143,15 +151,7 @@ class SudokuGenerator:
     '''
 
     def remove_cells(self):
-        removed_count = 0
-        while removed_count < self.removed_cells:
-            row = random.randint(0, self.row_length - 1)
-            col = random.randint(0, self.row_length - 1)
-            if self.board[row][col] != 0:
-                self.board[row][col] = 0
-                removed_count += 1
-        return None
-
+        pass
 
 
 '''
@@ -176,7 +176,7 @@ def generate_sudoku(size, removed):
     sudoku.fill_values()
     board = sudoku.get_board()
     sudoku.remove_cells()
-    #board = sudoku.get_board()
+    board = sudoku.get_board()
     return board
 
 
@@ -216,21 +216,17 @@ class Cell:
             self.screen.blit(text, text_rect)
 
 
-
-
-
-
 class Board:
     def __init__(self, width, height, screen, difficulty):
         self.width = width
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
-        self.gameState = generate_sudoku(9, difficulty)  # This will generate the board with the puzzle
+        self.gameState = [[0 for i in range(9)] for i in range(9)]
         self.selected_cell = None
 
-
     def draw(self):
+
         for i in range(1, 10):
             pygame.draw.line(self.screen, (0, 0, 0), (0, i * 64), (576, i * 64))
         for i in range(1, 10):
