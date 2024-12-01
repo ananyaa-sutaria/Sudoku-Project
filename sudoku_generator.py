@@ -151,15 +151,7 @@ class SudokuGenerator:
     '''
 
     def remove_cells(self):
-        removed_count = 0
-        while removed_count < self.removed_cells:
-            row = random.randint(0, self.row_length - 1)
-            col = random.randint(0, self.row_length - 1)
-            if self.board[row][col] != 0:
-                self.board[row][col] = 0
-                removed_count += 1
-        return None
-
+        pass
 
 
 '''
@@ -312,4 +304,7 @@ class Board:
                 if len(set(box)) != len([i for i in box if i != 0]):
                     return False
         return True
+
+
+
 
