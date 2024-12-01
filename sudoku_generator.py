@@ -1,6 +1,7 @@
 import math, random
 import pygame
 
+
 # ananyaa sutaria
 # crystal shao
 # kushagra katiyar
@@ -8,11 +9,11 @@ import pygame
 
 class SudokuGenerator:
 
-    def __init__(self, removed_cells, row_length = 9):
+    def __init__(self, removed_cells, row_length=9):
         self.row_length = row_length
         self.removed_cells = removed_cells
         self.board = []
-        self.box_length = math.pow(self.row_length, 1/2)
+        self.box_length = math.pow(self.row_length, 1 / 2)
 
         return None
 
@@ -55,9 +56,9 @@ class SudokuGenerator:
         row_start = (row // 3) * 3
         col_start = (col // 3) * 3
 
-        if self.valid_in_row(row,num) == False:
+        if self.valid_in_row(row, num) == False:
             return False
-        elif self.valid_in_col(col,num) == False:
+        elif self.valid_in_col(col, num) == False:
             return False
         elif self.valid_in_box(row_start, col_start, num) == False:
             return False
@@ -69,9 +70,9 @@ class SudokuGenerator:
 
         for i in range(row_start, row_start + 3):
             for j in range(col_start, col_start + 3):
-                num = random.randint(1,9)
+                num = random.randint(1, 9)
                 while num in num_set:
-                    num = random.randint(1,9)
+                    num = random.randint(1, 9)
                 num_set.append(num)
                 self.board[i][j] = num
 
@@ -79,7 +80,7 @@ class SudokuGenerator:
 
     def fill_diagonal(self):
         for i in range(0, self.row_length, 3):
-            self.fill_box(i,i)
+            self.fill_box(i, i)
 
         return None
 
@@ -88,13 +89,14 @@ class SudokuGenerator:
     Provided for students
     Fills the remaining cells of the board
     Should be called after the diagonal boxes have been filled
-	
+
 	Parameters:
 	row, col specify the coordinates of the first empty (0) cell
 
 	Return:
 	boolean (whether or not we could solve the board)
     '''
+
     def fill_remaining(self, row, col):
         if col >= self.row_length and row < self.row_length - 1:
             row += 1
@@ -130,6 +132,7 @@ class SudokuGenerator:
 	Parameters: None
 	Return: None
     '''
+
     def fill_values(self):
         self.fill_diagonal()
         self.fill_remaining(0, self.box_length)
@@ -139,26 +142,25 @@ class SudokuGenerator:
     This is done by setting some values to 0
     Should be called after the entire solution has been constructed
     i.e. after fill_values has been called
-    
+
     NOTE: Be careful not to 'remove' the same cell multiple times
     i.e. if a cell is already 0, it cannot be removed again
 
 	Parameters: None
 	Return: None
     '''
+
     def remove_cells(self):
         removed_count = 0
-
         while removed_count < self.removed_cells:
-
             row = random.randint(0, self.row_length - 1)
             col = random.randint(0, self.row_length - 1)
-
             if self.board[row][col] != 0:
                 self.board[row][col] = 0
                 removed_count += 1
-
         return None
+
+
 
 '''
 DO NOT CHANGE
@@ -175,6 +177,8 @@ removed is the number of cells to clear (set to 0)
 
 Return: list[list] (a 2D Python list to represent the board)
 '''
+
+
 def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)
     sudoku.fill_values()
@@ -196,7 +200,7 @@ class Cell:
     def set_cell_value(self, value):
         self.value = value
 
-    def set_sketched_value(self, value):
+    def sketched_value(self, value):
         self.sketched_value = value
 
     def draw(self):
@@ -219,14 +223,14 @@ class Cell:
             text_rect = text.get_rect(topleft=(x + 5, y + 5))
             self.screen.blit(text, text_rect)
 
+
 class Board:
     def __init__(self, width, height, screen, difficulty):
         self.width = width
         self.height = height
-        self.screen = screen
+        self.screen = pygame.display.set_mode((576, 576))
         self.difficulty = difficulty
         self.gameState = [[0 for i in range(9)] for i in range(9)]
-        self.cells = [[None for i in range(9)] for i in range(9)]
         self.selected_cell = None
 
     def draw(self):
@@ -234,7 +238,7 @@ class Board:
             pygame.draw.line(self.screen, (0, 0, 0), (0, i * 64), (576, i * 64))
         for i in range(1, 10):
             pygame.draw.line(self.screen, (0, 0, 0), (i * 64, 0), (i * 64, 576))
-        for i in range(3, 9, 3):#bold lines
+        for i in range(3, 9, 3):  # bold lines
             pygame.draw.line(self.screen, (0, 0, 0), (i * 64, 0), (i * 64, 576), 5)
             pygame.draw.line(self.screen, (0, 0, 0), (0, i * 64), (576, i * 64), 5)
         if self.selected_cell:
@@ -243,20 +247,24 @@ class Board:
 
     def select(self, row, col):
         self.selected_cell = (row, col)
+
     def click(self, x, y):
         if 0 <= x < self.width and 0 <= y < self.height:
             row = y // (self.height // 9)
             col = x // (self.width // 9)
             return (row, col)
         return None
+
     def clear(self):
         if self.selected_cell:
             row, col = self.selected_cell
             self.gameState[row][col] = 0
+
     def sketch(self, value):
         if self.selected_cell:
             row, col = self.selected_cell
             self.gameState[row][col] = value
+
     def place_number(self, value):
         if self.selected_cell:
             row, col = self.selected_cell
@@ -265,7 +273,10 @@ class Board:
     def reset_to_original(self):
         for row in range(9):
             for col in range(9):
-                self.gameState[row][col] = self.original_board[row][col]
+                if self.gameState[row][col] != 0:
+                    self.gameState[row][col] = self.gameState[row][col]
+                else:
+                    self.gameState[row][col] = 0
 
     def is_full(self):
         for row in range(9):
@@ -273,16 +284,19 @@ class Board:
                 if self.gameState[row][col] == 0:
                     return False
         return True
+
     def update_board(self):
         for row in range(9):
             for col in range(9):
                 self.gameState[row][col] = self.gameState[row][col]
+
     def find_empty(self):
         for row in range(9):
             for col in range(9):
                 if self.gameState[row][col] == 0:
                     return (row, col)
         return None
+
     def check_board(self):
         for row in range(9):
             if len(set(self.gameState[row])) != len([i for i in self.gameState[row] if i != 0]):
@@ -298,8 +312,4 @@ class Board:
                 if len(set(box)) != len([i for i in box if i != 0]):
                     return False
         return True
-
-
-
-
 

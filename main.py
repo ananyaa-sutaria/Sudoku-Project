@@ -1,131 +1,108 @@
 import pygame
 import sys
-from sudoku_generator import Board
-from sudoku_generator import SudokuGenerator
+from sudoku_generator import generate_sudoku  # Import the function
 
+# Initialize PyGame
 pygame.init()
-screen = pygame.display.set_mode((540, 600))
-pygame.display.set_caption("Sudoku")
 
-#inital screen shown when user starts or resets game
-def game_start_screen():
-    font = pygame.font.SysFont('Times New Roman', 30)
-    start_text = font.render("Select Difficulty:", True, (255, 255, 255))
-    screen.blit(start_text, (150, 100))
+# Define constants for the game window size and colors
+WIDTH, HEIGHT = 600, 600
+LINE_WIDTH = 3
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+BLUE = (0, 0, 255)
+RED = (255, 0, 0)
 
-    easy_button = pygame.Rect(60, 200, 120, 50)
-    medium_button = pygame.Rect(210, 200, 120, 50)
-    hard_button = pygame.Rect(360, 200, 120, 50)
-
-    pygame.draw.rect(screen, (0, 255, 0), easy_button)
-    pygame.draw.rect(screen, (255, 255, 0), medium_button)
-    pygame.draw.rect(screen, (255, 0, 0), hard_button)
-
-    easy_text = font.render("Easy", True, (0, 0, 0))
-    medium_text = font.render("Medium", True, (0, 0, 0))
-    hard_text = font.render("Hard", True, (0, 0, 0))
-
-    screen.blit(easy_text, (80, 215))
-    screen.blit(medium_text, (220, 215))
-    screen.blit(hard_text, (380, 215))
-
-    pygame.display.flip()
-
-    return easy_button, medium_button, hard_button
-
-#reset, restart, and exit buttons when the game has started
-def draw_buttons():
-    font = pygame.font.SysFont('Times New Roman', 24)
-
-    reset_button = pygame.Rect(50, 540, 120, 50)
-    restart_button = pygame.Rect(200, 540, 120, 50)
-    exit_button = pygame.Rect(350, 540, 120, 50)
-
-    pygame.draw.rect(screen, (0, 255, 0), reset_button)
-    pygame.draw.rect(screen, (0, 0, 255), restart_button)
-    pygame.draw.rect(screen, (255, 0, 0), exit_button)
-
-    reset_text = font.render("Reset", True, (255, 255, 255))
-    restart_text = font.render("Restart", True, (255, 255, 255))
-    exit_text = font.render("Exit", True, (255, 255, 255))
-
-    screen.blit(reset_text, (reset_button.x + 35, reset_button.y + 10))
-    screen.blit(restart_text, (restart_button.x + 20, restart_button.y + 10))
-    screen.blit(exit_text, (exit_button.x + 35, exit_button.y + 10))
-
-    pygame.display.flip()
-
-    return reset_button, restart_button, exit_button
+# Set up the screen and fonts
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Sudoku Game")
+font = pygame.font.SysFont("Arial", 32)
 
 
-def main():
-    clock = pygame.time.Clock()
+def draw_grid():
+    """Draw the main grid and subgrid lines"""
+    block_size = WIDTH // 9
+    for i in range(1, 9):
+        thickness = LINE_WIDTH if i % 3 != 0 else 6
+        pygame.draw.line(screen, BLACK, (i * block_size, 0), (i * block_size, HEIGHT), thickness)
+        pygame.draw.line(screen, BLACK, (0, i * block_size), (WIDTH, i * block_size), thickness)
 
-    easy_button, medium_button, hard_button = game_start_screen()
 
-    difficulty = 30
+def draw_numbers(board):
+    """Draw the numbers on the Sudoku board"""
+    block_size = WIDTH // 9
+    for i in range(9):
+        for j in range(9):
+            num = board[i][j]
+            if num != 0:
+                text = font.render(str(num), True, BLACK)
+                screen.blit(text, (j * block_size + block_size // 3, i * block_size + block_size // 4))
 
-    game_running = True
-    while game_running:
+
+def game_loop():
+    """Main game loop"""
+    # Define difficulty and removed cells
+    difficulty = 'medium'
+    removed_cells = 40 if difficulty == 'medium' else 30 if difficulty == 'easy' else 50
+
+    # Generate the Sudoku puzzle
+    board = generate_sudoku(9, removed_cells)  # Call the generate_sudoku() function
+
+    selected_cell = None
+    running = True
+
+    while running:
+        screen.fill(WHITE)
+
+        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_running = False
+                running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Handle cell selection (left click)
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                if easy_button.collidepoint(mouse_x, mouse_y):
-                    difficulty = 30
-                elif medium_button.collidepoint(mouse_x, mouse_y):
-                    difficulty = 40
-                elif hard_button.collidepoint(mouse_x, mouse_y):
-                    difficulty = 50
-                game_running = False
+                row = mouse_y // (HEIGHT // 9)
+                col = mouse_x // (WIDTH // 9)
+                selected_cell = (row, col)
+
+            elif event.type == pygame.KEYDOWN:
+                # Handle number input and cell selection
+                if selected_cell:
+                    row, col = selected_cell
+                    if event.key == pygame.K_1:
+                        board[row][col] = 1
+                    elif event.key == pygame.K_2:
+                        board[row][col] = 2
+                    elif event.key == pygame.K_3:
+                        board[row][col] = 3
+                    elif event.key == pygame.K_4:
+                        board[row][col] = 4
+                    elif event.key == pygame.K_5:
+                        board[row][col] = 5
+                    elif event.key == pygame.K_6:
+                        board[row][col] = 6
+                    elif event.key == pygame.K_7:
+                        board[row][col] = 7
+                    elif event.key == pygame.K_8:
+                        board[row][col] = 8
+                    elif event.key == pygame.K_9:
+                        board[row][col] = 9
+
+        # Draw the grid, numbers, and selected cell
+        draw_grid()
+        draw_numbers(board)
+
+        if selected_cell:
+            row, col = selected_cell
+            block_size = WIDTH // 9
+            pygame.draw.rect(screen, RED, (col * block_size, row * block_size, block_size, block_size), 3)
 
         pygame.display.flip()
-
-    board = Board(540, 600, screen, difficulty)
-
-    # Main game loop
-    game_running = True
-    while game_running:
-        screen.fill((255, 255, 255))  # Clear screen
-
-        board.draw()
-
-        reset_button, restart_button, exit_button = draw_buttons()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game_running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-                row, col = board.click(mouse_x, mouse_y)
-                board.select(row, col)
-
-                if reset_button.collidepoint(mouse_x, mouse_y):
-                    board.reset_to_original()
-                elif restart_button.collidepoint(mouse_x, mouse_y):
-                    screen.fill((0, 0, 0))
-                    main()
-                    return
-                elif exit_button.collidepoint(mouse_x, mouse_y):
-                    game_running = False
-
-            if event.type == pygame.KEYDOWN:
-                if board.selected_cell:
-                    if event.key == pygame.K_RETURN:
-                        board.place_number(board.selected_cell.sketched_value)
-                    elif event.key == pygame.K_BACKSPACE:
-                        board.selected_cell.set_sketched_value(0)
-                    elif pygame.K_1 <= event.key <= pygame.K_9:
-                        board.selected_cell.set_sketched_value(event.key - pygame.K_0)
-
-        pygame.display.flip()
-
-        clock.tick(60)
 
     pygame.quit()
     sys.exit()
 
 
+# Run the game
 if __name__ == "__main__":
-    main()
+    game_loop()
