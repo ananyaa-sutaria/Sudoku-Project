@@ -185,7 +185,7 @@ class Cell:
     def set_cell_value(self, value):
         self.value = value
 
-    def sketched_value(self, value):
+    def set_sketched_value(self, value):
         self.sketched_value = value
 
     def draw(self):
@@ -212,10 +212,12 @@ class Board:
     def __init__(self, width, height, screen, difficulty):
         self.width = width
         self.height = height
-        self.screen = pygame.display.set_mode((576, 576))
+        self.screen = screen
         self.difficulty = difficulty
         self.gameState = [[0 for i in range(9)] for i in range(9)]
+        self.cells = [[None for i in range(9)] for i in range(9)]
         self.selected_cell = None
+
     def draw(self):
         for i in range(1, 10):
             pygame.draw.line(self.screen, (0, 0, 0), (0, i * 64), (576, i * 64))
@@ -248,13 +250,12 @@ class Board:
         if self.selected_cell:
             row, col = self.selected_cell
             self.gameState[row][col] = value
+
     def reset_to_original(self):
         for row in range(9):
             for col in range(9):
-                if self.gameState[row][col] != 0:
-                    self.gameState[row][col] = self.gameState[row][col]
-                else:
-                    self.gameState[row][col] = 0
+                self.gameState[row][col] = self.original_board[row][col]
+
     def is_full(self):
         for row in range(9):
             for col in range(9):
