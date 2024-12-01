@@ -224,7 +224,7 @@ class Board:
     def __init__(self, width, height, screen, difficulty):
         self.width = width
         self.height = height
-        self.screen = pygame.display.set_mode((576, 576))
+        self.screen = screen
         self.difficulty = difficulty
         self.gameState = [[0 for i in range(9)] for i in range(9)]
         self.selected_cell = None
