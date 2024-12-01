@@ -216,6 +216,10 @@ class Cell:
             self.screen.blit(text, text_rect)
 
 
+
+
+
+
 class Board:
     def __init__(self, width, height, screen, difficulty):
         self.width = width
