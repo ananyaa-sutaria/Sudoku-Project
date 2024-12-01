@@ -58,6 +58,7 @@ def draw_buttons():
     return reset_button, restart_button, exit_button
 
 
+
 def main():
     clock = pygame.time.Clock()
 
