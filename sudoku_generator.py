@@ -9,31 +9,19 @@ import pygame
 
 class SudokuGenerator:
 
-    def __init__(self, removed_cells, row_length=9):
+    def __init__(self, row_length=9, removed_cells=0):
         self.row_length = row_length
         self.removed_cells = removed_cells
-        self.board = []
-        self.box_length = math.pow(self.row_length, 1 / 2)
-
-        return None
+        self.board = [[0] * self.row_length for _ in range(self.row_length)]  # Initialize the board as a 9x9 grid
+        self.box_length = int(math.sqrt(self.row_length))  # Box length is sqrt of row_length (assumes 9x9 grid)
+        self.solution_board = [[0] * self.row_length for _ in range(self.row_length)]  # Store the solved board
 
     def get_board(self):
-        for row in range(self.row_length):
-            new_row = []
-            for col in range(self.row_length):
-                new_row.append(0)
-            self.board.append(new_row)
-
         return self.board
 
     def print_board(self):
-        for row in range(len(self.board)):
-            for col in range(len(self.board[row])):
-                print(self.board[row][col], end=' ')
-            print()
-
-        return None
-
+        for row in self.board:
+            print(" ".join(str(cell) for cell in row))
     def valid_in_row(self, row, num):
         if num in self.board[row]:
             return False

@@ -1,7 +1,7 @@
 import pygame
 import sys
 from sudoku_generator import Board
-from sudoku_generator import SudokuGenerator
+from sudoku_generator import generate_sudoku  # Import the generate_sudoku function
 
 pygame.init()
 screen = pygame.display.set_mode((540, 600))
@@ -81,8 +81,8 @@ def main():
                 game_running = False
 
         pygame.display.flip()
-
-    board = Board(540, 600, screen, difficulty)
+    removed_cells = 40 if difficulty == 'medium' else 30 if difficulty == 'easy' else 50
+    board = generate_sudoku(9, removed_cells)
 
     # Main game loop
     game_running = True
