@@ -176,7 +176,7 @@ def generate_sudoku(size, removed):
     sudoku.fill_values()
     board = sudoku.get_board()
     sudoku.remove_cells()
-    board = sudoku.get_board()
+    #board = sudoku.get_board()
     return board
 
 
@@ -226,8 +226,9 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
-        self.gameState = [[0 for i in range(9)] for i in range(9)]
+        self.gameState = generate_sudoku(9, difficulty)  # This will generate the board with the puzzle
         self.selected_cell = None
+
 
     def draw(self):
         for i in range(1, 10):
