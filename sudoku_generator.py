@@ -498,14 +498,7 @@ class Board:
                     return False
         return True
 
-    #used for debugging
-    def print_board(self):
-        for i in range(len(self.board)):
-            print(self.board[i])
-        print("------")
 
-    def get_cell_value(self, row, col):
-        return self.board_cells[col][row].get_value()
 
 
 
