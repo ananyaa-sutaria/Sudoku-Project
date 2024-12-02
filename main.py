@@ -1,183 +1,12 @@
-"""
-
-import pygame
-import sys
-from sudoku_generator import Board
-from sudoku_generator import generate_sudoku
-
-pygame.init()
-screen = pygame.display.set_mode((540, 600))
-pygame.display.set_caption("Sudoku")
-
-#inital screen shown when user starts or resets game
-def game_start_screen():
-    font = pygame.font.SysFont('Times New Roman', 30)
-    start_text = font.render("Select Difficulty:", True, (255, 255, 255))
-    screen.blit(start_text, (150, 100))
-
-    easy_button = pygame.Rect(60, 200, 120, 50)
-    medium_button = pygame.Rect(210, 200, 120, 50)
-    hard_button = pygame.Rect(360, 200, 120, 50)
-
-    pygame.draw.rect(screen, (0, 255, 0), easy_button)
-    pygame.draw.rect(screen, (255, 255, 0), medium_button)
-    pygame.draw.rect(screen, (255, 0, 0), hard_button)
-
-    easy_text = font.render("Easy", True, (0, 0, 0))
-    medium_text = font.render("Medium", True, (0, 0, 0))
-    hard_text = font.render("Hard", True, (0, 0, 0))
-
-    screen.blit(easy_text, (80, 215))
-    screen.blit(medium_text, (220, 215))
-    screen.blit(hard_text, (380, 215))
-
-    pygame.display.flip()
-
-    return easy_button, medium_button, hard_button
-
-#reset, restart, and exit buttons when the game has started
-def draw_buttons():
-    font = pygame.font.SysFont('Times New Roman', 24)
-
-    reset_button = pygame.Rect(50, 540, 120, 50)
-    restart_button = pygame.Rect(200, 540, 120, 50)
-    exit_button = pygame.Rect(350, 540, 120, 50)
-
-    pygame.draw.rect(screen, (0, 255, 0), reset_button)
-    pygame.draw.rect(screen, (0, 0, 255), restart_button)
-    pygame.draw.rect(screen, (255, 0, 0), exit_button)
-
-    reset_text = font.render("Reset", True, (255, 255, 255))
-    restart_text = font.render("Restart", True, (255, 255, 255))
-    exit_text = font.render("Exit", True, (255, 255, 255))
-
-    screen.blit(reset_text, (reset_button.x + 35, reset_button.y + 10))
-    screen.blit(restart_text, (restart_button.x + 20, restart_button.y + 10))
-    screen.blit(exit_text, (exit_button.x + 35, exit_button.y + 10))
-
-    pygame.display.flip()
-
-    return reset_button, restart_button, exit_button
-
-
-def main():
-    clock = pygame.time.Clock()
-
-    easy_button, medium_button, hard_button = game_start_screen()
-
-    difficulty = 30
-
-    game_running = True
-    while game_running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game_running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-                if easy_button.collidepoint(mouse_x, mouse_y):
-                    difficulty = 30
-                elif medium_button.collidepoint(mouse_x, mouse_y):
-                    difficulty = 40
-                elif hard_button.collidepoint(mouse_x, mouse_y):
-                    difficulty = 50
-                game_running = False
-
-        pygame.display.flip()
-        pygame.display.update()
-
-    # Start the game with the selected difficulty
-    board = Board(540, 600, screen, difficulty)
-
-    # Main game loop
-    game_running = True
-    while game_running:
-        screen.fill((255, 255, 255))  # Clear screen
-
-        board.draw()
-
-        reset_button, restart_button, exit_button = draw_buttons()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game_running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-                row, col = board.click(mouse_x, mouse_y)
-                board.select(row, col)
-
-                if reset_button.collidepoint(mouse_x, mouse_y):
-                    board.reset_to_original()
-                elif restart_button.collidepoint(mouse_x, mouse_y):
-                    screen.fill((0, 0, 0))
-                    main()
-                    return
-                elif exit_button.collidepoint(mouse_x, mouse_y):
-                    game_running = False
-
-            if event.type == pygame.KEYDOWN:
-                if board.selected_cell:
-                    if event.key == pygame.K_RETURN:
-                        board.place_number(board.selected_cell.sketched_value)
-                    elif event.key == pygame.K_BACKSPACE:
-                        board.selected_cell.set_sketched_value(0)
-                    elif pygame.K_1 <= event.key <= pygame.K_9:
-                        board.selected_cell.set_sketched_value(event.key - pygame.K_0)
-
-        pygame.display.flip()
-
-        clock.tick(60)
-
-    pygame.quit()
-    sys.exit()
-
-
-if __name__ == "__main__":
-    main()
-
-
-
-"""
 import pygame, sys
 from sudoku_generator import *
-from sudoku_generator import *
-
-class Button:
-    def __init__(self, text, screen, x, y, width=80, height=30, color=(50, 50, 100)):
-        self.text = text
-        self.screen = screen
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.color = color
-
-        self.button_font = pygame.font.Font(None, 30)
-        self.button_text = self.button_font.render(self.text, 0, (255, 255, 255))
-        self.button_surf = pygame.Surface((self.button_text.get_size()[0] + 20, self.button_text.get_size()[1] + 20))
-        self.button_surf.fill((27, 38, 92))
-        self.button_surf.blit(self.button_text, (10, 10))
-        self.button_rect = self.button_surf.get_rect(center=(self.x, self.y))
-        screen.blit(self.button_surf, self.button_rect)
-
-    # Draw button
-    def draw_button(self, surface):
-        font = pygame.font.Font(None, 20)
-        text = font.render(self.text, True, (255, 55, 255))
-        text_rect = text.get_rect(center=(self.button_surf.get_width() / 2, self.button_surf.get_height() / 2))
-
-        self.button_surf.blit(text, text_rect)
-        surface.blit(self.button_surf, self.button_rect)
-
-    def get_collide_point(self):
-        rect = self.button_surf.get_rect()
-        return self.button_rect
 
 # Start screen
 def draw_game_start(screen):
     screen.fill("light blue")
     WIDTH = 540
     HEIGHT = 600
-    LINE_COLOR = (0,0,0)
+    LINE_COLOR = (0, 0, 0)
 
     # Welcome text
     welcome_text = pygame.font.Font(None, 50)
@@ -192,12 +21,33 @@ def draw_game_start(screen):
     screen.blit(welcome_surf, welcome_rect)
     screen.blit(select_surf, select_rect)
 
-    # Initialize and draw buttons
-    easy_button = Button('Easy', screen, WIDTH // 3, 350)
-    medium_button = Button('Medium', screen, WIDTH // 2, 350)
-    hard_button = Button('Hard', screen, (WIDTH // 3) * 2, 350)
+    # Define button properties with even less space
+    button_width = 100
+    button_height = 40
+    button_y = 350
+    padding = 5  # Even less space between buttons
 
-    # If button is clicked, return to main
+    # Adjust button positions with minimal space between them and center them horizontally
+    total_buttons_width = 3 * button_width + 2 * padding  # Total width of all buttons including space
+    start_x = (WIDTH - total_buttons_width) // 2  # Center position for buttons
+
+    easy_button_rect = pygame.Rect(start_x, button_y, button_width, button_height)
+    medium_button_rect = pygame.Rect(start_x + button_width + padding, button_y, button_width, button_height)
+    hard_button_rect = pygame.Rect(start_x + 2 * (button_width + padding), button_y, button_width, button_height)
+
+    pygame.draw.rect(screen, (27, 38, 92), easy_button_rect)
+    pygame.draw.rect(screen, (27, 38, 92), medium_button_rect)
+    pygame.draw.rect(screen, (27, 38, 92), hard_button_rect)
+
+    easy_text = pygame.font.Font(None, 30).render('Easy', 0, (255, 255, 255))
+    medium_text = pygame.font.Font(None, 30).render('Medium', 0, (255, 255, 255))
+    hard_text = pygame.font.Font(None, 30).render('Hard', 0, (255, 255, 255))
+
+    screen.blit(easy_text, (easy_button_rect.x + (button_width - easy_text.get_width()) // 2, easy_button_rect.y + (button_height - easy_text.get_height()) // 2))
+    screen.blit(medium_text, (medium_button_rect.x + (button_width - medium_text.get_width()) // 2, medium_button_rect.y + (button_height - medium_text.get_height()) // 2))
+    screen.blit(hard_text, (hard_button_rect.x + (button_width - hard_text.get_width()) // 2, hard_button_rect.y + (button_height - hard_text.get_height()) // 2))
+
+    # If button is clicked, return difficulty
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -205,25 +55,17 @@ def draw_game_start(screen):
 
             # If user clicks on button
             if event.type == pygame.MOUSEBUTTONDOWN:
-
-                # Easy
-                if easy_button.get_collide_point().collidepoint(event.pos):
-                    difficulty = 30
-                    return difficulty
-                # Medium
-                if medium_button.get_collide_point().collidepoint(event.pos):
-                    difficulty = 40
-                    return difficulty
-                # Hard
-                if hard_button.get_collide_point().collidepoint(event.pos):
-                    difficulty = 50
-                    return difficulty
+                if easy_button_rect.collidepoint(event.pos):
+                    return 30
+                if medium_button_rect.collidepoint(event.pos):
+                    return 40
+                if hard_button_rect.collidepoint(event.pos):
+                    return 50
         pygame.display.update()
-
 
 def draw_game_over(screen):
     BG_COLOR = "light blue"
-    LINE_COLOR = (0,0,0)
+    LINE_COLOR = (0, 0, 0)
     WIDTH = 540
     HEIGHT = 600
 
@@ -236,13 +78,28 @@ def draw_game_over(screen):
         text = "You lost :("
 
     game_over_surf = game_over_font.render(text, 0, LINE_COLOR)
-    game_over_rect = game_over_surf.get_rect(
-        center=(WIDTH // 2, HEIGHT // 2 - 100))
+    game_over_rect = game_over_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))
     screen.blit(game_over_surf, game_over_rect)
 
-    restart_button = Button('Restart', screen, 200, 400)
+    # Define bottom row buttons with minimal space
+    button_width = 100
+    button_height = 40
+    padding = 5  # Even less space between buttons
 
-    quit_button = Button('Quit', screen, 400, 400)
+    total_buttons_width = 3 * button_width + 2 * padding  # Total width of all buttons
+    start_x = (WIDTH - total_buttons_width) // 2  # Center position for buttons
+
+    restart_button_rect = pygame.Rect(start_x, 400, button_width, button_height)
+    quit_button_rect = pygame.Rect(start_x + button_width + padding, 400, button_width, button_height)
+
+    pygame.draw.rect(screen, (27, 38, 92), restart_button_rect)
+    pygame.draw.rect(screen, (27, 38, 92), quit_button_rect)
+
+    restart_text = pygame.font.Font(None, 30).render('Restart', 0, (255, 255, 255))
+    quit_text = pygame.font.Font(None, 30).render('Quit', 0, (255, 255, 255))
+
+    screen.blit(restart_text, (restart_button_rect.x + (button_width - restart_text.get_width()) // 2, restart_button_rect.y + (button_height - restart_text.get_height()) // 2))
+    screen.blit(quit_text, (quit_button_rect.x + (button_width - quit_text.get_width()) // 2, quit_button_rect.y + (button_height - quit_text.get_height()) // 2))
 
     while True:
         for event in pygame.event.get():
@@ -251,13 +108,9 @@ def draw_game_over(screen):
 
             # If user clicks on button
             if event.type == pygame.MOUSEBUTTONDOWN:
-                # Restart
-                if restart_button.get_collide_point().collidepoint(event.pos):
-                    # If user wants to keep playing another game
+                if restart_button_rect.collidepoint(event.pos):
                     return True
-
-                # Quit
-                if quit_button.get_collide_point().collidepoint(event.pos):
+                if quit_button_rect.collidepoint(event.pos):
                     sys.exit()
 
         pygame.display.update()
@@ -288,10 +141,29 @@ if __name__ == '__main__':
         original_board = board
         board.draw()
 
-        # Bottom row of buttons
-        reset_button = Button('Reset', screen, (WIDTH // 3), 570)
-        restart_button = Button('Restart', screen, WIDTH // 2, 570)
-        exit_button = Button('Exit', screen, (WIDTH // 3) * 2, 570)
+        # Define bottom row buttons with minimal space
+        button_width = 100
+        button_height = 40
+        padding = 5  # Even less space between buttons
+
+        total_buttons_width = 3 * button_width + 2 * padding  # Total width of all buttons
+        start_x = (WIDTH - total_buttons_width) // 2  # Center position for buttons
+
+        reset_button_rect = pygame.Rect(start_x, 570 - button_height // 2, button_width, button_height)
+        restart_button_rect = pygame.Rect(start_x + button_width + padding, 570 - button_height // 2, button_width, button_height)
+        exit_button_rect = pygame.Rect(start_x + 2 * (button_width + padding), 570 - button_height // 2, button_width, button_height)
+
+        pygame.draw.rect(screen, (27, 38, 92), reset_button_rect)
+        pygame.draw.rect(screen, (27, 38, 92), restart_button_rect)
+        pygame.draw.rect(screen, (27, 38, 92), exit_button_rect)
+
+        reset_text = pygame.font.Font(None, 30).render('Reset', 0, (255, 255, 255))
+        restart_text = pygame.font.Font(None, 30).render('Restart', 0, (255, 255, 255))
+        exit_text = pygame.font.Font(None, 30).render('Exit', 0, (255, 255, 255))
+
+        screen.blit(reset_text, (reset_button_rect.x + (button_width - reset_text.get_width()) // 2, reset_button_rect.y + (button_height - reset_text.get_height()) // 2))
+        screen.blit(restart_text, (restart_button_rect.x + (button_width - restart_text.get_width()) // 2, restart_button_rect.y + (button_height - restart_text.get_height()) // 2))
+        screen.blit(exit_text, (exit_button_rect.x + (button_width - exit_text.get_width()) // 2, exit_button_rect.y + (button_height - exit_text.get_height()) // 2))
 
         # Constants
         x = 0
@@ -309,16 +181,16 @@ if __name__ == '__main__':
                     x, y = pygame.mouse.get_pos()
 
                     # User clicks quit
-                    if exit_button.get_collide_point().collidepoint(event.pos):
+                    if exit_button_rect.collidepoint(event.pos):
                         finished_game = True
                         sys.exit()
 
                     # User clicks reset
-                    if reset_button.get_collide_point().collidepoint(event.pos):
+                    if reset_button_rect.collidepoint(event.pos):
                         board.reset_to_original()
 
                     # User clicks restart
-                    if restart_button.get_collide_point().collidepoint(event.pos):
+                    if restart_button_rect.collidepoint(event.pos):
                         screen.fill(BG_COLOR)
                         game_over = True
                         break
@@ -330,7 +202,6 @@ if __name__ == '__main__':
                         board.select(x, y)
 
                 # User enters valid keyboard input
-                # help from: https://stackoverflow.com/questions/71672325/how-to-get-keyboard-input-in-pygame
                 if event.type == pygame.KEYDOWN:
 
                     if (event.key == pygame.K_1 or
@@ -355,91 +226,6 @@ if __name__ == '__main__':
                         board.update_board()
                         sketched_value = 0
 
-                    # Arrow Navigation
-                    if event.key == pygame.K_RIGHT:
-                        # Counter Variables checks if it is the only available square in the row or col
-                        counter = 0
-                        if x < 8:
-                            x += 1
-                        else:
-                            x = 0
-                        # Section of Code goes till it finds a viable square
-                        while True:
-                            if board.select(x, y) is None:
-                                if x < 8:
-                                    x += 1
-                                else:
-                                    x = 0
-                                    counter += 1
-                                    if counter > 1:
-                                        break
-                            else:
-                                break
-                        board.select(x, y)
-                    # Arrow Navigation
-                    if event.key == pygame.K_LEFT:
-                        # Counter Variables checks if it is the only available square in the row or col
-                        counter = 0
-                        if x > 0:
-                            x -= 1
-                        else:
-                            x = 8
-                        # Section of Code goes till it finds a viable square
-                        while True:
-                            if board.select(x, y) is None:
-                                if x > 0:
-                                    x -= 1
-                                else:
-                                    x = 8
-                                    counter += 1
-                                    if counter > 1:
-                                        break
-                            else:
-                                break
-                        board.select(x, y)
-                    # Arrow Navigation
-                    if event.key == pygame.K_UP:
-                        # Counter Variables checks if it is the only available square in the row or col
-                        counter = 0
-                        if y > 0:
-                            y -= 1
-                        else:
-                            y = 8
-                        # Section of Code goes till it finds a viable square
-                        while True:
-                            if board.select(x, y) is None:
-                                if y > 0:
-                                    y -= 1
-                                else:
-                                    y = 8
-                                    counter += 1
-                                    if counter > 1:
-                                        break
-                            else:
-                                break
-                        board.select(x, y)
-                    # Arrow Navigation
-                    if event.key == pygame.K_DOWN:
-                        # Counter Variables checks if it is the only available square in the row or col
-                        counter = 0
-                        if y < 8:
-                            y += 1
-                        else:
-                            y = 0
-                        # Section of Code goes till it finds a viable square
-                        while True:
-                            if board.select(x, y) is None:
-                                if y < 8:
-                                    y += 1
-                                else:
-                                    y = 0
-                                    counter += 1
-                                    if counter > 1:
-                                        break
-                            else:
-                                break
-                        board.select(x, y)
-
                     if board.is_full():
                         game_over = True
                         winner = True
@@ -451,4 +237,3 @@ if __name__ == '__main__':
                 game_over = draw_game_over(screen)
 
             pygame.display.update()
-
