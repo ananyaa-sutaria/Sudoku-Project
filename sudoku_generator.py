@@ -295,13 +295,9 @@ Return: list[list] (a 2D Python list to represent the board)
 def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)
     sudoku.fill_values()
-    board = sudoku.get_board()
     sudoku.remove_cells()
     board = sudoku.get_board()
     return board
-
-
-
 
 
 class Cell:
@@ -340,9 +336,6 @@ class Cell:
             self.screen.blit(text, text_rect)
 
 
-
-
-# The Board class and its attributes are established.
 class Board:
     def __init__(self, width, height, screen, difficulty):
         self.width = width
